@@ -20,7 +20,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) return;
     const userRef = firestore.doc(`users/${userAuth.uid}`);
     const snapShot = await userRef.get();
-    console.log(userRef);
     if (!snapShot.exists) {
         const { displayName, email } = userAuth;
         const createdAt = new Date();
@@ -54,14 +53,22 @@ export const convertCollectionsSnapshotToMap = (collections) => {
             items,
         }
     })
-    return transformedCollection.reduce((accumulator, collection)=>{
-        accumulator[collection.title.toLowerCase()]=collection;
+    return transformedCollection.reduce((accumulator, collection) => {
+        accumulator[collection.title.toLowerCase()] = collection;
         // accumulator[collection.title.toUpperCase()]=collection;
         return accumulator;
     }, {});
 }
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({ promt: 'select_account' });
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(userAuth => {
+            unsubscribe();
+            resolve(userAuth);
+        }, reject);
+    });
+}
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({ promt: 'select_account' });
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

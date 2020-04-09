@@ -37,7 +37,7 @@ const CheckoutPage=({cartItems, cartTotal})=>(
             <br/>
             4242 4242 4242 4242 - Exp:04/24 - CVV 123
         </div>
-        <StripeButton/>
+        <StripeButton price={cartTotal}/>
     </div>
 )
 const mapStateToProps = createStructuredSelector({
